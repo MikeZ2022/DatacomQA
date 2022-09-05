@@ -1,0 +1,35 @@
+///<reference types="cypress"/>
+describe('DataCom QA assessment', () => {
+    beforeEach(()=>{
+      cy.viewport('macbook-15')
+      cy.forceVisit('/client')
+    })
+    it('TC4: Verify that payees can be sorted by name', () => {
+      cy.get('.topbar-actions >.MenuButton').click()
+      cy.get('.MainMenu-navList >.js-main-menu-payees').click()
+      cy.get('.js-add-payee').eq(0).click()
+      cy.get('.controls >.js-submit').click()
+      cy.get('input[name="apm-name"]').type('Mike{enter}')
+      cy.get('.account-row >.align-right').type('1234567890123000')
+      cy.get('.controls >.js-submit').click()
+      cy.get('.List--border > li').should(($lis) => {
+        expect($lis.eq(0), 'first item').to.contain('Auckland Council')
+        expect($lis.eq(1), 'second item').to.contain('Babysitter')
+        expect($lis.eq(2), 'third item').to.contain('Cleaners')
+        expect($lis.eq(3), 'third item').to.contain('MERIDIAN ENERGY')
+        expect($lis.eq(4), 'second item').to.contain('Mike')
+        expect($lis.eq(5), 'first item').to.contain('VODAFONE NZ LTD (MOBILE)')
+      })
+      cy.get('.Col-sm-6 >.js-payee-name-column').click()
+      cy.get('.List--border > li').should(($lis) => {
+        expect($lis.eq(0), 'first item').to.contain('VODAFONE NZ LTD (MOBILE)')
+        expect($lis.eq(1), 'second item').to.contain('Mike')
+        expect($lis.eq(2), 'third item').to.contain('MERIDIAN ENERGY')
+        expect($lis.eq(3), 'third item').to.contain('Cleaners')
+        expect($lis.eq(4), 'second item').to.contain('Babysitter')
+        expect($lis.eq(5), 'first item').to.contain('Auckland Council')
+      })
+      cy.clearCookies()
+      cy.getCookies().should('be.empty')
+    })
+  })
